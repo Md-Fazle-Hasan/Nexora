@@ -1,0 +1,45 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Enter the code we emailed you to verify your Nexora account.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f6f3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#191816" media="(prefers-color-scheme: dark)">
+  <title>{% if purpose == "reset" %}Reset password{% else %}Verify email{% endif %} — Nexora</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+  <link rel="stylesheet" href="{% static 'style.css' %}?v=5">
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-card">
+      <h1>{% if purpose == "reset" %}Reset password{% else %}Verify your email{% endif %}</h1>
+      <p class="muted">We sent a 6-digit code to <strong>{{ email }}</strong>. It expires in 10 minutes.</p>
+      {% if dev_code %}<p class="muted">Dev mode code: <strong>{{ dev_code }}</strong></p>{% endif %}
+      {% if error %}<p class="error">{{ error }}</p>{% endif %}
+      {% if notice %}<p class="muted">{{ notice }}</p>{% endif %}
+      <form method="post" class="form-grid">
+        {% csrf_token %}
+        <input name="code" placeholder="6-digit code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required autofocus>
+        {% if purpose == "reset" %}
+        <input name="password" type="password" placeholder="New password" autocomplete="new-password" minlength="8" maxlength="16" required>
+        <input name="confirm" type="password" placeholder="Confirm new password" autocomplete="new-password" minlength="8" maxlength="16" required>
+        <p class="muted">8-16 characters with a lowercase letter, an uppercase letter and a number.</p>
+        {% endif %}
+        <button class="btn" type="submit">{% if purpose == "reset" %}Set new password{% else %}Verify and continue{% endif %}</button>
+      </form>
+      <form method="post" class="form-grid">
+        {% csrf_token %}
+        <button class="btn ghost" type="submit" name="resend" value="1">Send a new code</button>
+      </form>
+      {% if purpose == "reset" %}
+      <p class="muted"><a href="/reset/">Use a different email</a></p>
+      {% else %}
+      <p class="muted"><a href="/signup/">Back to signup</a></p>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

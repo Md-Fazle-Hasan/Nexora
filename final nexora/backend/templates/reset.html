@@ -1,0 +1,35 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Reset your Nexora password with a one-time code sent to your email.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f6f3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#191816" media="(prefers-color-scheme: dark)">
+  <title>Reset password — Nexora</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+  <link rel="stylesheet" href="{% static 'style.css' %}?v=5">
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-card">
+      <h1>Reset password</h1>
+      {% if error %}<p class="error">{{ error }}</p>{% endif %}
+      {% if sent %}
+      <p class="muted">If an account exists for <strong>{{ values.email }}</strong>, we emailed a 6-digit code. It expires in 10 minutes.</p>
+      <a class="btn" href="/reset/verify/">Enter code</a>
+      {% else %}
+      <p class="muted">Enter your account email and we will send you a one-time code.</p>
+      <form method="post" class="form-grid">
+        {% csrf_token %}
+        <input name="email" type="email" placeholder="Email" value="{{ values.email }}" autocomplete="email" required autofocus>
+        <button class="btn" type="submit">Send code</button>
+      </form>
+      {% endif %}
+      <p class="muted">Remembered it? <a href="/login/">Back to sign in</a></p>
+    </div>
+  </div>
+</body>
+</html>

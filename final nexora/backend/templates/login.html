@@ -1,0 +1,32 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Nexora — WhatsApp AI sales agent for your business.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f6f3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#191816" media="(prefers-color-scheme: dark)">
+  <title>Sign in — Nexora</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+  <link rel="stylesheet" href="{% static 'style.css' %}?v=5">
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-card">
+      <h1>Nexora</h1>
+      <p class="muted">WhatsApp AI sales agent</p>
+      {% if reset_ok %}<p class="muted">Password updated. Sign in with your new password.</p>{% endif %}
+      {% if error %}<p class="error">{{ error }}</p>{% endif %}
+      <form method="post" class="form-grid">
+        {% csrf_token %}
+        <input name="username" placeholder="Email or username" autocomplete="username" required autofocus>
+        <input name="password" type="password" placeholder="Password" autocomplete="current-password" required>
+        <button class="btn" type="submit">Sign in</button>
+      </form>
+      <p class="muted"><a href="/reset/">Forgot password?</a> · New business? <a href="/signup/">Create an account</a></p>
+    </div>
+  </div>
+</body>
+</html>

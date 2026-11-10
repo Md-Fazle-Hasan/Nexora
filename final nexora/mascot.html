@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Cartoon Sphere Mascot</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      overflow: hidden;
+    }
+
+    .mascot-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 3D Cartoon Greyish-Light-Pink Sphere */
+    .sphere {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      /* Soft 3D clay/cartoon shading */
+      background: radial-gradient(
+        circle at 35% 28%,
+        #f3e8eb 0%,
+        #d8c3c8 42%,
+        #b59da3 82%,
+        #967f85 100%
+      );
+      box-shadow: 
+        inset -10px -14px 25px rgba(82, 65, 70, 0.35),
+        inset 10px 12px 20px rgba(255, 255, 255, 0.75);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      animation: float 3.5s ease-in-out infinite;
+      cursor: pointer;
+    }
+
+    /* Eyes Container */
+    .eyes-container {
+      display: flex;
+      gap: 32px;
+      transform: translateY(-8px);
+      transition: transform 0.1s ease-out;
+    }
+
+    /* Pure White Cartoon Pill Eyes */
+    .eye {
+      width: 24px;
+      height: 54px;
+      background-color: #ffffff;
+      border-radius: 999px;
+      /* Subtle inner/outer glow to sit nicely in the 3D surface */
+      box-shadow: 
+        0 3px 6px rgba(90, 70, 75, 0.25),
+        inset 0 -3px 5px rgba(220, 210, 215, 0.5);
+      transform-origin: center;
+      animation: blink 4.5s infinite;
+    }
+
+    /* Ground Shadow */
+    .shadow {
+      width: 130px;
+      height: 22px;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(110, 95, 100, 0.32) 0%,
+        rgba(110, 95, 100, 0) 75%
+      );
+      border-radius: 50%;
+      margin-top: 28px;
+      animation: shadow-scale 3.5s ease-in-out infinite;
+    }
+
+    /* Crisp Cartoon Blink Animation */
+    @keyframes blink {
+      0%, 44%, 48%, 92%, 96%, 100% {
+        transform: scaleY(1) scaleX(1);
+      }
+      46%, 94% {
+        transform: scaleY(0.06) scaleX(1.15); /*Squishes flat horizontally*/
+      }
+    }
+
+    /* Idle Floating Animation */
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-14px);
+      }
+    }
+
+    @keyframes shadow-scale {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.85;
+      }
+      50% {
+        transform: scale(0.8);
+        opacity: 0.45;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mascot-wrapper">
+    <div class="sphere" id="sphere">
+      <div class="eyes-container" id="eyes">
+        <div class="eye"></div>
+        <div class="eye"></div>
+      </div>
+    </div>
+    <div class="shadow"></div>
+  </div>
+
+  <script>
+    const eyes = document.getElementById('eyes');
+    const sphere = document.getElementById('sphere');
+
+    // Subtle cursor tracking so the sphere looks toward the user's mouse
+    document.addEventListener('mousemove', (e) => {
+      const rect = sphere.getBoundingClientRect();
+      const sphereCenterX = rect.left + rect.width / 2;
+      const sphereCenterY = rect.top + rect.height / 2;
+
+      // Limit maximum eye movement distance to keep it looking natural
+      const deltaX = (e.clientX - sphereCenterX) / 28;
+      const deltaY = (e.clientY - sphereCenterY) / 28;
+
+      const clampedX = Math.max(-18, Math.min(18, deltaX));
+      const clampedY = Math.max(-14, Math.min(14, deltaY));
+
+      eyes.style.transform = `translate(${clampedX}px, calc(-8px + ${clampedY}px))`;
+    });
+
+    // Reset to direct front view when mouse leaves window
+    document.addEventListener('mouseleave', () => {
+      eyes.style.transform = `translate(0px, -8px)`;
+    });
+
+    // Trigger an extra blink when clicked
+    sphere.addEventListener('click', () => {
+      document.querySelectorAll('.eye').forEach(eye => {
+        eye.style.animation = 'none';
+        eye.offsetHeight; /* trigger reflow */
+        eye.style.animation = 'blink 0.3s ease-in-out';
+        setTimeout(() => {
+          eye.style.animation = 'blink 4.5s infinite';
+        }, 300);
+      });
+    });
+  </script>
+
+</body>
+</html>
